@@ -14,6 +14,8 @@ import Box from '@mui/material/Box';
 import { useEffect, useState } from 'react';
 import IntervalSelector from './interval-selector';
 import Paper from '@mui/material/Paper';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 ChartJS.register(
   CategoryScale,
@@ -25,10 +27,10 @@ ChartJS.register(
 );
 
 interface TimeSeriesGraphProps {
-  dataset: IDataSet;
+  dataset: IDatasetOption;
 }
 
-interface IDataSet {
+export interface IDatasetOption {
   function: string;
   label: string;
 }
@@ -39,6 +41,7 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({ dataset }) => {
   const [dates, setDates] = useState<string[]>([]);
   const [values, setValues] = useState<number[]>([]);
   const [interval, setInterval] = useState('monthly');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     axios.get('https://www.alphavantage.co/query', {
@@ -49,7 +52,11 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({ dataset }) => {
       },
     }).then((response) => {
         const { data } = response;
-        updateChartData(data);
+        if (data['Note']) {
+          setError(data['Note']);
+        } else {
+          updateChartData(data);
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -98,6 +105,14 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({ dataset }) => {
           <Line options={options} data={chartData} />
         </div>
       </Paper>
+        {error && (
+          <Box mt={2}>
+            <Alert onClose={() => {setError('')}} severity="error">
+              <AlertTitle>Error</AlertTitle>
+              {error}
+            </Alert>
+          </Box>
+        )}
     </Box>
   );
 };

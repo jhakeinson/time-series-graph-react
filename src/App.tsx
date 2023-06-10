@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import TimeSeriesGraph from './components/time-series-graph'
+import TimeSeriesGraph, { IDatasetOption } from './components/time-series-graph'
 import Container from '@mui/material/Container';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -8,9 +8,8 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-
 function App() {
-  const datasetOptions = [
+  const datasetOptions: IDatasetOption[] = [
     {
       function: 'WTI',
       label: 'West Texas Intermediate'
@@ -22,7 +21,15 @@ function App() {
     {
       function: 'NATURAL_GAS',
       label: 'Henry Hub Natural Gas Spot'
-    }
+    },
+    {
+      function: 'COPPER',
+      label: 'Global Price of Copper'
+    },
+    {
+      function: 'ALUMINUM',
+      label: 'Global Price of Aluminum'
+    },
   ];
 
   const [dataset, setDataset] = useState(datasetOptions[0])
